@@ -4,8 +4,7 @@ import {connect} from 'react-redux'
 import {message,Button,Input,Pagination as _Pagination} from 'antd'
 import styled from 'styled-components'
 import {bindActionCreators} from 'redux'
-import service from '../service/music'
-import action from '../action/music'
+import thunk from '../middleware/thunk'
 import {ipcRenderer} from 'electron'
 
 const Page=styled.div`
@@ -54,21 +53,15 @@ const Pagination=styled(_Pagination)`
     }
 `;
 
-class Music extends React.Component{
+export default class Music extends React.Component{
     constructor(props){
         super(props);
-        ipcRenderer.on('query-result',(event,data)=>{
-            this.props.queryed(data);
-        })
     }
     componentWillMount(){
         this.props.query('董贞')
     }
     render(){
         let {musicList,curMusic,query,play}=this.props;
-        // play=function(index){
-        //     message.info(index)
-        // }
         return(
             <Page>
                 <Search onSearch={value=>query(value)}/>
@@ -91,12 +84,3 @@ class Music extends React.Component{
         )
     }
 };
-
-function mapStateToProps(state){
-    return state.music
-}
-function mapDispatchToProps(dispatch){
-    return bindActionCreators(action,dispatch);
-}
-
-export default connect(mapStateToProps,mapDispatchToProps)(Music);

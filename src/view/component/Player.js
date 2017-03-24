@@ -3,8 +3,9 @@ import {render} from 'react-dom'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import styled from 'styled-components'
+import {message} from 'antd'
 
-const Player=styled.div`
+const View=styled.div`
     width:50%;
     height:100%;
     display:flex;
@@ -25,7 +26,28 @@ const PlayerCtrl=styled.div`
     align-items:center;
 `;
 const CtrlProgress=styled.div`
-    
+    display:flex;
+    flex-direction:row;
+    align-items:center;
+    & .progress-track{
+        width:150px;
+        height:1px;
+        background-color:rgba(50,50,50,.5);
+        display:flex;
+        flex-direction:row;
+        align-items:center;
+
+        & .progress{
+            height:100%;
+            background-color:green;
+        }
+        & .pointer{
+            width:2px;
+            height:10px;
+            border-radius:50%;
+            background-color:black;
+        }
+    }
 `;
 const CtrlBtns=styled.div`
     display:flex;
@@ -38,28 +60,49 @@ const CtrlBtns=styled.div`
         margin:5px;
     }
 `;
-class Player extends React.Component{
+export default class Player extends React.Component{
+
+    constructor(props){
+        super(props)
+    }
+
+    onPlayBtnClick(){
+        let{status,curMusic,curIndex,play,pause}=this.props;
+        if(status=='paused'){
+            play(curIndex,curMusic.audio)
+        }else{
+            pause();
+        }
+    }
+
+     toTimeStr(second){
+        var m=parseInt(second/60);
+        var s=parseInt(second%60);
+        return (m<10 ? '0'+m : m)+':'+(s<10 ? '0'+s : s) ; 
+    }
 
     render(){
+        let {curIndex,curMusic,curTime,duration,status,play}=this.props;
         return(
-            <Player>
-                <PlayerImg src={this.state.curMusic?this.state.curMusic.picUrl:''}/>
+            <View>
+                <PlayerImg src={curMusic?curMusic.picUrl:''}/>
                     <PlayerCtrl>
-                        <CtrlProgress></CtrlProgress>
+                        <CtrlProgress>
+                            <span className='cur-time'>{this.toTimeStr(curTime)}</span>
+                            <div className='progress-track'>
+                                <div className="progress" style={{width:curTime/duration*100+'%'}}></div>
+                                <div className="pointer"></div>
+                            </div>
+                            <span className="duration">{this.toTimeStr(duration)}</span>
+                        </CtrlProgress>
                         <CtrlBtns>
                             <i className="icon iconfont icon-prev"></i>
-                            <i className="icon iconfont icon-play" onClick={this.onPlayBtnClick.bind(this)}></i>
+                            <i className={"icon iconfont "+(status=='playing'?'icon-pause':'icon-play')} onClick={this.onPlayBtnClick.bind(this)}></i>
                             <i className="icon iconfont icon-next"></i>
                             <i className="icon iconfont icon-volume"></i>
                         </CtrlBtns>
                     </PlayerCtrl>
-            </Player>
+            </View>
         )
     }
 }
-function mapStateToProps(state){
-
-}
-function mapDispatchToProps(dispatch){
-    
-};

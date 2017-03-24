@@ -35,6 +35,9 @@ module.exports={
 		}
 		return audio.played;
 	},
+	pause:()=>{
+		audio.pause();
+	},
 	isPlaying:audio.play,
 	ifPaused:audio.pause,
 	duration:audio.duration,

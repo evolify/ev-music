@@ -134,7 +134,7 @@ export default class Mian extends React.Component{
 
     onMusicItemClick(index){
         this.switchMusic(index);
-        this.play();
+        this.play();``
     }
     onPlayBtnClick(){
 

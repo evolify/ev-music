@@ -1,12 +1,14 @@
 import React from 'react'
 import {render} from 'react-dom'
 import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import thunk from '../middleware/thunk'
 import {message,Button,Input,Pagination as _Pagination} from 'antd'
 import styled from 'styled-components'
-import img1 from '../res/image/1.jpg'
 import {ipcRenderer} from 'electron'
 import player from '../utils/player'
 import Music from './Music'
+import Player from './Player'
 const App=styled.div`
   width:600px;
   height:400px;
@@ -25,34 +27,18 @@ const BgLayer=styled.div`
     background-image:url(${props=>props.bgSrc});
     filter:blur(15px);
 `;
-const Player=styled.div`
-    align-items:center;
-    justify-content:space-between;
-`;
-const PlayerImg=styled.img`
-    width:150px;
-    height:150px;
-    border-radius:50%;
-    margin-top:20px;
-`;
-const PlayerCtrl=styled.div`
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-`;
-const CtrlProgress=styled.div`
-    
-`;
-const CtrlBtns=styled.div`
-    display:flex;
-    flex-direction:row;
-    justify-content:center;
-    align-items:center;
-    padding:10px;
-    & .icon{
-        -webkit-app-region:no-drag;
-        margin:5px;
+const CloseBtn=styled.div`
+    width:25px;
+    height:25px;
+    line-height:25px;
+    text-align:center;
+    position:absolute;
+    top:0;
+    right:0;
+    background:transparent;
+    &:hover{
+        background:red;
+        color:white
     }
 `;
 
@@ -69,67 +55,28 @@ class Main extends React.Component{
     }
 
     componentDidMount(){
-        message.info(this.props.curIndex)
     }
     
     render(){
+        let props=this.props;
         return(
             <App>
                 <BgLayer bgSrc={this.props.curMusic?this.props.curMusic.picUrl:''}/>
-                <Music />
+                <CloseBtn onClick={props.exit}>X</CloseBtn>
+                <Music {...props}/>
+                <Player {...props} />
             </App>
         );
     }
 }
 
-const controller={
-    app:null,
-
-    hook:(obj)=>{
-        controller.app=obj;
-        return controller;
-    },
-    
-    updateTime:(time)=>{
-        // app.currentTime=toTimeStr(time);
-    },
-    onPlay:()=>{
-        if(app.status!=='paused'){
-            console.log('start')
-            // $('.img-music').addClass('rotate');
-        }
-        
-        // $('.img-music').css('animation-play-state','running');
-        // app.status='played';
-    },
-    onPause:()=>{
-        
-            console.log('start')
-        // app.status='paused';
-        // $('.img-music').css('animation-play-state','paused');
-    },
-    onEnd:()=>{
-        // app.status='ended';
-        // $('.img-music').removeClass('rotate');
-        // switchMusic(app.curIndex+1);
-        // play();
-    },
-    onDurationChange:(duration)=>{
-        // app.duration=toTimeStr(duration);
-    }
-}
-
-toTimeStr:(second)=>{
-    var m=parseInt(second/60);
-    var s=parseInt(second%60);
-    return (m<10 ? '0'+m : m)+':'+(s<10 ? '0'+s : s) ; 
-}
 
 function mapStateToProps(state){
     return state.music
 }
-function mapDispatchToProps(){
-
+function mapDispatchToProps(dispatch){
+    thunk.init(dispatch);
+    return bindActionCreators(thunk,dispatch);
 }
 
-export default connect(mapStateToProps)(Main);
+export default connect(mapStateToProps,mapDispatchToProps)(Main);

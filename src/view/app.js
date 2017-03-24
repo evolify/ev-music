@@ -6,14 +6,16 @@ import thunkMiddleware from 'redux-thunk'
 import {BrowserRouter,Route} from 'react-router-dom'
 import reducer from './reducer/reducer'
 import Main from './component/Main1.js'
+import {ipcRenderer} from 'electron'
 
 const initState={
     music:{
         curMusic:null,
         curIndex:-1,
         musicList:[],
-        curTime:'00:00',
-        duration:'00:00'
+        curTime:0,
+        duration:1,
+        status:''
     }
 }
 

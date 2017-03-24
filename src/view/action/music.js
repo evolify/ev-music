@@ -16,6 +16,10 @@ export default{
         type:ActionType.MUSIC_PAUSE,
         index:index
     }),
+    test:(index)=>({
+        type:'zzz',
+        index:index
+    }),
     updateTime:(time)=>({
         type:ActionType.UPDATE_TIME,
         time:time
@@ -23,5 +27,9 @@ export default{
     updateDuration:(duration)=>({
         type:ActionType.UPDATE_DURATION,
         duration:duration
+    }),
+    updateStatus:status=>({
+        type:ActionType.UPDATE_STATUS,
+        status:status
     })
 }

@@ -29,6 +29,11 @@ export default function music(state={},action){
                 ...state,
                 duration:action.duration
             }
+        case ActionType.UPDATE_STATUS:
+            return {
+                ...state,
+                status:action.status
+            }
         default:
             return state;
     }

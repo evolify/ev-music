@@ -1,40 +1,34 @@
 import player from '../utils/player'
 import {ipcRenderer} from 'electron'
 import action from '../action/music'
-// const dispatch=null;
 export default{
-    init:(disp)=>{
-        // dispatch=disp;
+    init:(dispatch)=>{
         player.init(controller);
         ipcRenderer.on('query-result',(event,data)=>{
-            dispatch(action.query(data));
+            dispatch(action.queryed(data));
         })
     },
     query:(keywords)=>{
-        ipcRenderer.send('query',{keywords:action.keywords});
+        ipcRenderer.send('query',{keywords:keywords});
     },
     play:(index,audio)=>{
         player.play(audio);
-        dispatch(action.play(indexx));
+        return dispatch=>{
+            dispatch(action.play(indexx));
+        }
     }
 }
 const controller={
     app:null,
-    
     updateTime:(time)=>{
-        dispatch(action.updateTime(time))
+        // dispatch(action.updateTime(time))
     },
     onPlay:()=>{
         if(app.status!=='paused'){
             console.log('start')
-            // $('.img-music').addClass('rotate');
         }
-        
-        // $('.img-music').css('animation-play-state','running');
-        // app.status='played';
     },
     onPause:()=>{
-        
             console.log('start')
         // app.status='paused';
         // $('.img-music').css('animation-play-state','paused');
